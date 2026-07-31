@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🍷 ¿Tomamos un vinito?</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(-45deg, #3a0d1a, #6b0f2b, #8e1f4b, #4a0e2c, #1a0510);
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease infinite;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  @keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Partículas de brillo flotante */
+  .sparkle {
+    position: absolute;
+    font-size: 1.2rem;
+    opacity: 0;
+    animation: floatUp 6s linear infinite;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  @keyframes floatUp {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.8; }
+    90%  { opacity: 0.3; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+  }
+
+  .screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    text-align: center;
+  }
+
+  #screen2 {
+    display: none;
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .delay-1 { animation-delay: 0.3s; }
+  .delay-2 { animation-delay: 0.9s; }
+  .delay-3 { animation-delay: 1.5s; }
+  .delay-4 { animation-delay: 2.1s; }
+
+  /* Copa de vino animada */
+  .glass-wrap {
+    font-size: 5.5rem;
+    line-height: 1;
+    margin-bottom: 10px;
+    display: inline-block;
+    transform-origin: bottom center;
+    animation: swirl 3.2s ease-in-out infinite;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+  }
+
+  @keyframes swirl {
+    0%, 100% { transform: rotate(0deg) translateY(0); }
+    25%  { transform: rotate(-8deg) translateY(-4px); }
+    50%  { transform: rotate(0deg) translateY(0); }
+    75%  { transform: rotate(8deg) translateY(-4px); }
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    min-height: 2.4em;
+    max-width: 90vw;
+    line-height: 1.4;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 3px;
+    background: #f5c6d9;
+    margin-left: 2px;
+    animation: blink 0.8s step-end infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  p.subtitle {
+    margin-top: 14px;
+    font-size: 1rem;
+    opacity: 0.85;
+    max-width: 85vw;
+  }
+
+  button {
+    font-family: inherit;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 16px 34px;
+    margin-top: 40px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  button:active {
+    transform: scale(0.95);
+  }
+
+  #btnMeSumo {
+    background: linear-gradient(135deg, #e63965, #b3123f);
+    color: #fff;
+  }
+
+  #btnMeSumo:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+  }
+
+  .btn-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 34px;
+  }
+
+  #btnSi {
+    background: linear-gradient(135deg, #ff5f8f, #e63965);
+    color: #fff;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 8px 25px rgba(230,57,101,0.4); }
+    50% { box-shadow: 0 8px 35px rgba(230,57,101,0.8); }
+  }
+
+  #btnPensando {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    position: fixed;
+    z-index: 5;
+    transition: top 0.35s ease, left 0.35s ease;
+  }
+
+  .step-text {
+    font-size: 1.3rem;
+    font-weight: 600;
+    min-height: 1.8em;
+    margin: 6px 0;
+    opacity: 0;
+  }
+
+  .glass-small {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    animation: clink 1.6s ease-in-out infinite;
+  }
+
+  @keyframes clink {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-15deg); }
+  }
+
+  @media (max-width: 380px) {
+    h1 { font-size: 1.5rem; }
+    .glass-wrap { font-size: 4.5rem; }
+    button { font-size: 1rem; padding: 14px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="sparkles"></div>
+
+<!-- PANTALLA 1 -->
+<div class="screen" id="screen1">
+  <div class="glass-wrap fade-in">🍷</div>
+  <h1 id="typewriter"><span id="typedText"></span><span class="cursor">&nbsp;</span></h1>
+  <button id="btnMeSumo" class="fade-in delay-4">🍷 Me sumo</button>
+</div>
+
+<!-- PANTALLA 2 -->
+<div class="screen" id="screen2">
+  <div class="glass-small">🥂</div>
+  <div class="step-text" id="step1">¡Genial!</div>
+  <div class="step-text" id="step2">Entonces...</div>
+  <div class="step-text" id="step3">¿Qué te parece este sábado a las 22:00?</div>
+
+  <div class="btn-row" id="finalButtons" style="opacity:0;">
+    <button id="btnSi">😍 ¡Obvio que sí!</button>
+    <button id="btnPensando">🤔 Lo estoy pensando...</button>
+  </div>
+</div>
+
+<script>
+  // ---- Partículas flotantes de fondo ----
+  const sparkleContainer = document.getElementById('sparkles');
+  const sparkleEmojis = ['✨', '🍷', '💫', '🥂'];
+  for (let i = 0; i < 14; i++) {
+    const s = document.createElement('span');
+    s.className = 'sparkle';
+    s.textContent = sparkleEmojis[Math.floor(Math.random() * sparkleEmojis.length)];
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.animationDelay = (Math.random() * 6) + 's';
+    s.style.animationDuration = (5 + Math.random() * 4) + 's';
+    sparkleContainer.appendChild(s);
+  }
+
+  // ---- Efecto máquina de escribir ----
+  const fullText = "¿Tomamos un vinito?";
+  const typedEl = document.getElementById('typedText');
+  let charIndex = 0;
+
+  function typeWriter() {
+    if (charIndex < fullText.length) {
+      typedEl.textContent += fullText.charAt(charIndex);
+      charIndex++;
+      setTimeout(typeWriter, 65);
+    }
+  }
+  setTimeout(typeWriter, 600);
+
+  // ---- Pasar a la pantalla 2 ----
+  document.getElementById('btnMeSumo').addEventListener('click', () => {
+    document.getElementById('screen1').style.display = 'none';
+    document.getElementById('screen2').style.display = 'flex';
+    runStepSequence();
+  });
+
+  function runStepSequence() {
+    const steps = ['step1', 'step2', 'step3'];
+    let delay = 400;
+    steps.forEach((id, i) => {
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        el.style.transform = 'translateY(0)';
+        el.style.opacity = '1';
+      }, delay);
+      delay += 1300;
+    });
+
+    setTimeout(() => {
+      const fb = document.getElementById('finalButtons');
+      fb.style.transition = 'opacity 1s ease';
+      fb.style.opacity = '1';
+      positionEscapeButton();
+    }, delay);
+  }
+
+  // ---- Botón "¡Obvio que sí!" -> WhatsApp ----
+  document.getElementById('btnSi').addEventListener('click', () => {
+    const phone = "5493472610087";
+    const msg = encodeURIComponent("¡Dale! Me sumo al vinito el sábado 🍷😍");
+    window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+  });
+
+  // ---- Botón "Lo estoy pensando..." que escapa ----
+  const btnPensando = document.getElementById('btnPensando');
+
+  function positionEscapeButton() {
+    const btnWidth = btnPensando.offsetWidth || 220;
+    const btnHeight = btnPensando.offsetHeight || 55;
+    const maxX = window.innerWidth - btnWidth - 10;
+    const maxY = window.innerHeight - btnHeight - 10;
+    const x = Math.max(10, Math.random() * maxX);
+    const y = Math.max(10, Math.random() * maxY);
+    btnPensando.style.left = x + 'px';
+    btnPensando.style.top = y + 'px';
+  }
+
+  function escapeButton(e) {
+    e.preventDefault();
+    positionEscapeButton();
+  }
+
+  btnPensando.addEventListener('mouseenter', escapeButton);
+  btnPensando.addEventListener('touchstart', escapeButton, { passive: false });
+  btnPensando.addEventListener('pointerdown', escapeButton);
+
+  window.addEventListener('resize', () => {
+    if (document.getElementById('finalButtons').style.opacity === '1') {
+      positionEscapeButton();
+    }
+  });
+</script>
+
+</body>
+</html>
